@@ -17,8 +17,6 @@ const corsOptions = {
 
 connection();
 
-
-
 //middlewares
 app.use(cors(corsOptions));
 // app.use(cors({ origin: process.env.REMOTE_CLIENT_APP, credentials: true }));
@@ -29,9 +27,6 @@ app.use('/public/images', express.static(__dirname + '/public/images/'));
 app.use('/user', user);
 app.use('/admin', admin);
 app.use('/auth', auth)
-
-
-
 
 
 app.listen(PORT, () => {
