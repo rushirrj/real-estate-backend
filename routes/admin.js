@@ -2,22 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
 const Enquiry = require('../models/Enquiry');
-const multer = require("multer");
+
 const Project = require('../models/Project');
 const Subscriptions = require('../models/Subscriptions');
 const cloudinary = require("cloudinary").v2;
 // const bodyParser = require("body-parser");
 const fs = require("fs");
 
-var storage = multer.diskStorage({
 
-    destination: "./public/images",
-    filename: function(req, file, cb) {
-        let url = file.originalname.replace(/\ /g, "");
-        // let url = file.originalname;
-        cb(null, Date.now() + '-' + url);
-    }
-})
 
 cloudinary.config({
     cloud_name: "rushirrj",
@@ -58,8 +50,7 @@ async function uploadToCloudinary(locaFilePath, filename) {
         });
 }
 
-// const uploadMultiple = multer({ storage, limits: { fieldSize: 25 * 1024 * 1024 } });
-const upload = multer({ storage: storage });
+
 
 // not used in project
 router.post('/single_img', upload.single('file'), (req, res) => {

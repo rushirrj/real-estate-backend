@@ -10,27 +10,8 @@ router.post("/register", async(request, response) => {
 
         const { username, password } = request.body;
 
-        // const user = await pool.query('SELECT * FROM users WHERE user_email = $1', [email]);
-
         const user = await User.create(request.body);
         console.log(user);
-
-        // if (user.rows.length !== 0) {
-        //     response.status(401).send("User Already Exists");
-        // }
-
-
-        // bycrpyting (hiding password)
-        // const saltRound = 10;
-        // const generateSalt = await bycrypt.genSalt(saltRound);
-
-        // const bycryptPassword = await bycrypt.hash(password, generateSalt);
-
-        // const newUser = await pool.query("INSERT INTO users(user_name, user_email, user_password) VALUES($1, $2, $3) RETURNING *", [name, email, bycryptPassword]);
-
-
-        // const token = jwtGenerator(newUser.rows[0].user_id);
-        // console.log(newUser.rows[0]);
         return response.json(user);
 
     } catch (err) {
