@@ -2,14 +2,22 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
 const Enquiry = require('../models/Enquiry');
-
+const multer = require("multer");
 const Project = require('../models/Project');
 const Subscriptions = require('../models/Subscriptions');
 const cloudinary = require("cloudinary").v2;
 // const bodyParser = require("body-parser");
 const fs = require("fs");
 
+var storage = multer.diskStorage({
 
+    destination: "./public/images",
+    filename: function(req, file, cb) {
+        let url = file.originalname.replace(/\ /g, "");
+        // let url = file.originalname;
+        cb(null, Date.now() + '-' + url);
+    }
+})
 
 cloudinary.config({
     cloud_name: "rushirrj",
@@ -50,7 +58,8 @@ async function uploadToCloudinary(locaFilePath, filename) {
         });
 }
 
-
+// const uploadMultiple = multer({ storage, limits: { fieldSize: 25 * 1024 * 1024 } });
+const upload = multer({ storage: storage });
 
 // not used in project
 router.post('/single_img', upload.single('file'), (req, res) => {
@@ -89,9 +98,6 @@ router.post('/multiple_img', upload.array('files', 12), async(req, res) => {
         console.log(err.message);
     }
 })
-
-
-
 
 router.get('/ping', (req, res) => {
     return res.status(201).json({ success: "Pong" });
@@ -209,8 +215,6 @@ router.put('/product/update/:id', async(req, res) => {
     }
 })
 
-
-
 //Blog Apis Start
 router.get('/blogs', async(req, res) => {
 
@@ -309,32 +313,28 @@ router.get('/subscriptions', async(req, res) => {
     }
 })
 
+router.post('/blog/create', upload.single('file'), async(req, res) => {
+    const { title, author, blog_content, tags, comments } = req.body;
+    // coments and tags are arrays
 
 
-
-
-// router.post('/blog/create', upload.single('file'), async(req, res) => {
-//     const { title, author, blog_content, tags, comments } = req.body;
-//     // coments and tags are arrays
-
-
-//     try {
-//         const image_url = `http://localhost:5000/user/${req.file.filename}`;
-//         let blog = await Blog.create({
-//             title: title,
-//             author: author,
-//             blog_content: blog_content,
-//             tags: tags,
-//             image_url: image_url,
-//             comments: comments
-//         });
-//         return res.status(201).json({
-//             success: blog
-//         })
-//     } catch (err) {
-//         console.log(err.message);
-//     }
-// })
+    try {
+        const image_url = `http://localhost:5000/user/${req.file.filename}`;
+        let blog = await Blog.create({
+            title: title,
+            author: author,
+            blog_content: blog_content,
+            tags: tags,
+            image_url: image_url,
+            comments: comments
+        });
+        return res.status(201).json({
+            success: blog
+        })
+    } catch (err) {
+        console.log(err.message);
+    }
+})
 
 
 module.exports = router;
